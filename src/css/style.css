@@ -1,0 +1,168 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "ptSansNarrowRegular", sans-serif;
+}
+
+html, body{
+    height: 100%;
+    width: 100%;
+}
+
+button{
+    cursor: pointer;
+}
+
+.todo_app{
+    height: 100%;
+}
+
+@font-face{
+    font-family: "protestRiot";
+    src: url(../fonts/ProtestRiot-Regular.ttf);
+}
+
+@font-face {
+    font-family: "ptSansNarrowBold";
+    src: url(../fonts/PTSansNarrow-Bold.ttf);
+}
+
+@font-face {
+    font-family: "ptSansNarrowRegular";
+    src: url(../fonts/PTSansNarrow-Regular.ttf);
+}
+
+:root{
+    font-size: 12px;
+    --header-bg-color: #1C39BB;
+    --nav-btn-color-hover: #f0ece2;
+    --nav-bg-color: #FAF9F6;
+}
+
+.todo_app{
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+}
+
+.todo_app > header{
+    grid-column: 1 / span 12;
+    padding: 10px 10px 10px 20px;
+    background-color: var(--header-bg-color);
+    color:azure;
+    display: flex;
+    align-items: center;
+}
+
+header > h1{
+    text-transform: uppercase;
+    font-family: "protestRiot", sans-serif;
+}
+
+/* Sidebar */
+.todo_app > nav.sidebar{
+    padding: 20px;
+    grid-column: 1 / span 2;
+    background-color: var(--nav-bg-color);
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+
+.projects-nav-btns{
+    margin-bottom: 25px;
+}
+
+.home > h2, .projects > h2, .todos_div > h2{
+    margin-bottom: 20px;
+    font-family: "ptSansNarrowBold", sans-serif;
+    font-size: 1.7rem;
+}
+
+.home-nav-btns, .project_nav_btn{
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+}
+
+.home-nav-btns > div:hover, .project_btn_container:hover{
+    background-color: var(--nav-btn-color-hover);
+    border-radius: 4px;
+}
+
+.nav_btn, .project_btn{
+    padding: 7px;
+    border: 0;
+    outline: 0;
+    background-color: transparent;
+    font-size: 1.2rem;
+}
+
+.add_project_btn,.project_btns_control > button{
+    padding: 7px;
+    background-color: var(--header-bg-color);
+    color: azure;
+    border: 0;
+    outline: 0;
+    border-radius: 5px;
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.add_project_btn.hide{
+    display: none;
+}
+
+.delete_project_btn{
+    border: 0;
+    outline: none;
+    background-color: transparent;
+    width: 10%;
+    margin-left: auto;
+}
+
+.delete_project_btn img{
+    width: 100%;
+}
+
+.project_btn_container{
+    display: flex;
+}
+/* Sidebar */
+
+/* Projects Form */
+.project_form{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.project_btns_control{
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+.project_form > input {
+    /* border-color: var(--nav-btn-color-hover); */
+    padding: 5px;
+    border-radius: 5px;
+    outline: 0;
+    font-size: 1 3rem;
+}
+/* Projects Form */
+
+/* Todos*/
+main.todos_wrapper{
+    grid-column: 3 / 13;
+}
+
+.todos_div > h2.project-header{
+    text-align: center;
+}
+
+.grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+/* Todos*/
