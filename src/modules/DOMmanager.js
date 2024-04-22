@@ -163,7 +163,6 @@ function ProjectElements() {
     displayProjects,
     removeProjectButton,
     projectFormEventListner,
-    getDeleteButtons,
     switchElementStatus,
     cancelProject,
     getProjectButtons,
