@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Todo App</title>
+<body>
+    <div class="todo_app">
+        <header>
+            <h1>todo app</h1>
+        </header>
+        <nav class="sidebar">
+            <div class="home">
+                <h2>Home</h2>
+                <div class="home-nav-btns">
+                    <div class="active"><button type="button" class="nav_btn" data-id="all_task">All Tasks</button></div>
+                    <div> <button type="button" class="nav_btn" data-id="today">Today</button></div>
+                    <div> <button type="button" class="nav_btn" data-id="this_week">This Week</button></div>
+                    <div> <button type="button" class="nav_btn" data-id="completed">Completed</button></div>
+                    <div> <button type="button" class="nav_btn" data-id="important">Important</button></div>
+                </div>
+            </div>
+            <div class="projects" id="projects">
+                <h2>Projects</h2>
+                <div class="projects-nav-btns" data-id="projects-btns-div"></div>
+                <button type="button" class="add_project_btn add_style" id="add_project">Add Project</button>
+            </div>
+        </nav>
+        <main class="todos_wrapper" id="todos_wrapper">
+            <div class="todos_div">
+                <h2 class="project-header">All Tasks</h2>
+                <div class="grid" id="grid"></div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
