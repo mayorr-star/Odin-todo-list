@@ -38,6 +38,8 @@ button{
     --header-bg-color: #1C39BB;
     --nav-btn-color-hover: #f0ece2;
     --nav-bg-color: #FAF9F6;
+    --form-btn-bg-color:#5adbb5; 
+    --input-border:#8b8a8b;
 }
 
 .todo_app{
@@ -99,10 +101,8 @@ header > h1{
     font-size: 1.2rem;
 }
 
-.add_project_btn,.project_btns_control > button{
+.add_project_btn, .project_btns_control > button, .new_todo_btn, .todo_form > .fieldset > .btn_box > button{
     padding: 7px;
-    background-color: var(--header-bg-color);
-    color: azure;
     border: 0;
     outline: 0;
     border-radius: 5px;
@@ -110,7 +110,16 @@ header > h1{
     font-weight: 700;
 }
 
-.add_project_btn.hide{
+.add_project_btn, .new_todo_btn{
+    background-color: var(--header-bg-color);
+    color: azure;
+}
+
+.project_btns_control > button, .todo_form > .fieldset > .btn_box > button{
+    background-color: var(--form-btn-bg-color);
+}
+
+.hide{
     display: none;
 }
 
@@ -138,23 +147,24 @@ header > h1{
     gap: 12px;
 }
 
-.project_btns_control{
+.project_btns_control, .todo_form > .fieldset > .btn_box{
     display: flex;
     gap: 12px;
     justify-content: flex-end;
 }
-.project_form > input {
-    /* border-color: var(--nav-btn-color-hover); */
-    padding: 5px;
-    border-radius: 5px;
-    outline: 0;
-    font-size: 1 3rem;
+.project_form > input, .todo_form > .fieldset > .input_control > input {
+    font-size: max(16px, 1em);
+    background-color: #fff;
+    border: 2px solid var(--input-border);
+    border-radius: 4px;
+    padding: 5px 5px;
 }
 /* Projects Form */
 
 /* Todos*/
 main.todos_wrapper{
     grid-column: 3 / 13;
+    padding: 25px;
 }
 
 .todos_div > h2.project-header{
@@ -163,6 +173,77 @@ main.todos_wrapper{
 
 .grid{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 25px;
+}
+
+.todo_form{
+    background-color: #d5d5d5;
+    margin: 0 auto;
+    max-width: 400px;
+    min-width: 250px;
+    border: 1px solid #2f2f22;
+    border-radius: 3px;
+}
+
+.fieldset{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px 25px;
+}
+
+.todo_form > .fieldset >.input_control > label{
+    display: block;
+    font-size: 1.3rem;
+}
+
+.todo_form legend{
+    font-size: 2rem;
+    text-align: center;
+    width: 100%;
+    background: #364351;
+    border-radius: 3px 3px 0 0;
+    color: white;
+    padding: 30px 0;
+}
+
+.todo_form > .fieldset > .input_control > input, .todo_form > .fieldset > .input_control> textarea, .todo_form > .fieldset > .input_control > select{
+    width: 70%;
+}
+
+textarea{
+    padding: 5px;
+}
+
+.controls img{
+    width: 8%;
+}
+
+.todo_article .controls{
+    display: flex;
+    gap: 5px;
+    justify-content: flex-end;
+}
+
+.todo_article{
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    font-size: 1.3rem;
+    padding: 7px;
+    background-color: var(--form-btn-bg-color);
+    border-radius: 7px;
+}
+
+.todo_article h3{
+    text-align: center;
+    font-size: 1.4rem;
+    text-transform: uppercase;
+}
+
+.checked{
+    text-decoration: line-through;
+    color: #d5d5d5;
 }
 /* Todos*/
