@@ -77,16 +77,12 @@ function ProjectElements() {
     return true;
   };
 
-  const cancelProject = (element, button) => {
-    button.addEventListener("click", (e) => {
+  const closeProjectForm = (element) => {
+    const cancelButton = document.getElementById("cancel_project");
+    cancelButton.addEventListener("click", (e) => {
       e.preventDefault();
-      if (e.target.classList.contains("cancel_project")) {
-        const addProjectButton = document.getElementById("add_project");
-        addProjectButton.classList.remove("hide");
-      } else if (e.target.classList.contains("cancel_todo")) {
-        const newTodoButton = document.getElementById("new_todo_btn");
-        newTodoButton.classList.remove("hide");
-      }
+      const addProjectButton = document.getElementById("add_project");
+      addProjectButton.classList.remove("hide");
       clearContent(element);
     });
   };
@@ -97,7 +93,7 @@ function ProjectElements() {
     const projectForm = document.querySelector(".project_form");
     const cancelButton = document.getElementById("cancel_project");
     submitProject();
-    cancelProject(projectForm, cancelButton);
+    closeProjectForm(projectForm);
   };
 
   const switchElementStatus = (elementStatus, value) => {
@@ -127,7 +123,7 @@ function ProjectElements() {
       }
     });
   };
-  
+
   const submitProject = () => {
     const projectForm = document.querySelector(".project_form");
     projectForm.addEventListener("submit", (e) => {
@@ -143,18 +139,17 @@ function ProjectElements() {
       addProjectButton.classList.remove("hide");
     });
   };
-  
+
   const getProjectButtons = () => {
     return Array.from(document.querySelectorAll("#project_btn"));
   };
-  
+
   return {
     displayProjects,
     removeProjectButton,
     switchElementStatus,
-    cancelProject,
     getProjectButtons,
-    appendProjectForm
+    appendProjectForm,
   };
 }
 
@@ -162,15 +157,15 @@ ProjectElements().displayProjects(projectsArray);
 ProjectElements().removeProjectButton();
 
 const addProjectButton = document.getElementById("add_project");
-addProjectButton.addEventListener("click", () => {
+addProjectButton.addEventListener("click", (e) => {
   ProjectElements().appendProjectForm();
   addProjectButton.classList.add("hide");
 });
 
-
 function TodoElements() {
-  let todoFormActive = false;
   let activeProject = null;
+  let editId = null;
+  let edit = false;
   const switchActiveProject = (value) => {
     activeProject = value;
   };
@@ -248,7 +243,7 @@ function TodoElements() {
     buttonContainer.classList.add("btn_box");
     buttonContainer.appendChild(submitTodoBtn);
     buttonContainer.appendChild(cancelTodoBtn);
-    
+
     todoPriority.appendChild(highPriority);
     todoPriority.appendChild(mediumPriority);
     todoPriority.appendChild(lowPriority);
@@ -273,12 +268,11 @@ function TodoElements() {
 
     return todoForm;
   };
-  
+
   const appendTodoForm = (form) => {
     const mainTodosWrapper = document.getElementById("todos_wrapper");
     mainTodosWrapper.appendChild(form);
-    const cancelButton = document.getElementById("cancel_todo_btn");
-    ProjectElements().cancelProject(form, cancelButton);
+    closeTodoForm(form);
     submitTodo();
   };
 
@@ -293,14 +287,14 @@ function TodoElements() {
   };
 
   const appendNewTodoButton = () => {
-      const newTodoButton = createNewTodoButton();
-      const mainTodosWrapper = document.getElementById("todos_wrapper");
-      mainTodosWrapper.appendChild(newTodoButton);
-      newTodoButton.addEventListener("click", function () {
-        const todoForm = createTodoForm("", "", "");
-        appendTodoForm(todoForm);
-        newTodoButton.classList.add("hide");
-      });
+    const newTodoButton = createNewTodoButton();
+    const mainTodosWrapper = document.getElementById("todos_wrapper");
+    mainTodosWrapper.appendChild(newTodoButton);
+    newTodoButton.addEventListener("click", function () {
+      const todoForm = createTodoForm("", "", "");
+      appendTodoForm(todoForm);
+      newTodoButton.classList.add("hide");
+    });
   };
 
   const showTodos = () => {
@@ -363,8 +357,8 @@ function TodoElements() {
 
   let inputValues = [];
 
-  const storeInputValues = (title, description, date) => {
-    inputValues = [title, description, date];
+  const saveValues = (title, description, date, priority) => {
+    inputValues = [title, description, date, priority];
   };
   const getInputValues = () => inputValues;
 
@@ -383,31 +377,66 @@ function TodoElements() {
         const todoTitle = todoTitleInput.value;
         const todoDescription = todoDescriptionTextarea.value;
         const dueDate = todoDueDateInput.value;
-        storeInputValues(todoTitle, todoDescription, dueDate);
         const priority = todoPrioritySelect.value;
+        saveValues(todoTitle, todoDescription, dueDate, priority);
         const projectName = getActiveProject();
-        const todo = Todos().createTodo(
-          todoTitle,
-          todoDescription,
-          dueDate,
-          priority,
-          projectName
-        );
-        todo.storeTodo();
-        const todoElement = createTodoElement();
-        appendTodoElement(todoElement);
+        if (!edit) {
+          const todo = Todos().createTodo(
+            todoTitle,
+            todoDescription,
+            dueDate,
+            priority,
+            projectName,
+            "pending",
+            todoTitle
+          );
+          todo.storeTodo();
+          const todoElement = createTodoElement();
+          appendTodoElement(todoElement);
+        } else {
+          const [title, description, date, importance] = getInputValues();
+          Todos().editTodo(
+            findTodoPosition(editId),
+            title,
+            description,
+            date,
+            importance,
+            getActiveProject()
+          );
+          editTodoElement(title, description, date, importance);
+        }
         clearContent(todoForm);
         const newTodoButton = document.getElementById("new_todo_btn");
         newTodoButton.classList.remove("hide");
+        if (edit) {
+          edit = false;
+        }
       }
     });
   };
 
+  const closeTodoForm = (element) => {
+    const cancelButton = document.getElementById("cancel_todo_btn");
+    cancelButton.addEventListener("click", (e) => {
+      e.preventDefault();
+      const newTodoButton = document.getElementById("new_todo_btn");
+      newTodoButton.classList.remove("hide");
+      clearContent(element);
+      edit = false;
+    });
+  };
+
   const createTodoElement = () => {
-    const todoContainer = document.createElement("article");
-    todoContainer.classList.add("todo_article");
+    const todoElement = document.createElement("article");
+    const todoContainer = document.createElement("div");
+    const priorityElement = document.getElementById("todo_priority");
+    todoContainer.classList.add("todo-container");
+    const border = document.createElement("div");
+    border.classList.add("border");
+    todoElement.classList.add("todo_article");
     const title = document.createElement("h3");
     title.textContent = document.getElementById("todo_title").value;
+    todoElement.setAttribute("id", `${title.textContent}`);
     const description = document.createElement("p");
     description.textContent = `Description: ${
       document.getElementById("todo_description").value
@@ -437,11 +466,24 @@ function TodoElements() {
     controls.appendChild(checkInput);
     controls.appendChild(editTodoBtn);
     controls.appendChild(deleteTodoBtn);
-    todoContainer.appendChild(title);
-    todoContainer.appendChild(description);
-    todoContainer.appendChild(date);
-    todoContainer.appendChild(priority);
-    todoContainer.appendChild(controls);
+    todoContainer.appendChild(border);
+    todoElement.appendChild(title);
+    todoElement.appendChild(description);
+    todoElement.appendChild(date);
+    todoElement.appendChild(priority);
+    todoElement.appendChild(controls);
+    todoContainer.appendChild(todoElement);
+
+    switch (priorityElement.value) {
+      case "High":
+        showPriority(border, "red");
+        break;
+      case "Medium":
+        showPriority(border, "#1C39BB");
+        break;
+      case "Low":
+        showPriority(border, "yellow");
+    }
     return todoContainer;
   };
 
@@ -450,10 +492,14 @@ function TodoElements() {
     gridContainer.appendChild(todo);
   };
 
-  const findTodoPosition = (title) => {
+  const showPriority = (border, color) => {
+    border.style.backgroundColor = color;
+  };
+
+  const findTodoPosition = (id) => {
     for (const project of projectsArray) {
       const index = project.todoList.findIndex((todo) => {
-        return todo.title === title;
+        return todo.id === id;
       });
       return index;
     }
@@ -467,8 +513,8 @@ function TodoElements() {
         e.target.dataset.id === "delete_todo_btn"
       ) {
         const todoToRemove = e.target.parentNode.parentNode;
-        const title = getTodoTitle(e);
-        Todos().deleteTodo(getActiveProject(), findTodoPosition(title));
+        const todoId = getTodoId(e);
+        Todos().deleteTodo(getActiveProject(), findTodoPosition(todoId));
         clearContent(todoToRemove);
       }
     });
@@ -480,17 +526,17 @@ function TodoElements() {
       if (e.target.type === "checkbox") {
         const article = e.target.parentNode.parentNode;
         article.classList.toggle("checked");
-        const title = getTodoTitle(e);
+        const todoId = getTodoId(e);
         if (e.target.checked) {
           const activeProject = getActiveProject();
           Todos().changeTodoStatus(
-            findTodoPosition(title),
+            findTodoPosition(todoId),
             "complete",
             activeProject
           );
         } else {
           Todos().changeTodoStatus(
-            findTodoPosition(title),
+            findTodoPosition(todoId),
             "pending",
             activeProject
           );
@@ -501,30 +547,45 @@ function TodoElements() {
 
   const getGridElement = () => document.getElementById("grid");
 
-  const editTodoElement = () => {
-    const gridContainer = getGridElement();
-    gridContainer.addEventListener("click", (e) => {
-      if (
-        e.target.tagName === "IMG" &&
-        e.target.dataset.id === "edit_todo_btn"
-      ) {
-        const inputValues = getInputValues();
-        const todoForm = createTodoForm(
-          inputValues[0],
-          inputValues[1],
-          inputValues[2]
-        );
-        appendTodoForm(todoForm);
+  const gridContainer = getGridElement();
+  gridContainer.addEventListener("click", (e) => {
+    if (e.target.tagName === "IMG" && e.target.dataset.id === "edit_todo_btn") {
+      const inputValues = getInputValues();
+      const todoForm = createTodoForm(
+        inputValues[0],
+        inputValues[1],
+        inputValues[2]
+      );
+      appendTodoForm(todoForm);
+      const parent = e.target.parentNode.parentNode;
+      parent.classList.add("edit");
+      editId = getTodoId(e);
+      edit = true;
+    }
+  });
+
+  const editTodoElement = (title, description, date, importance) => {
+    const todoItems = document.querySelectorAll(".todo_article");
+    todoItems.forEach((todo) => {
+      if (todo.classList.contains("edit")) {
+        const todoTitle = todo.children[0];
+        const todoDescription = todo.children[1];
+        const todoDate = todo.children[2];
+        const priority = todo.children[3];
+        todoTitle.textContent = title;
+        todoDescription.textContent = `Description: ${description}`;
+        todoDate.textContent = `Due date: ${date}`;
+        priority.textContent = `Priority: ${importance}`;
       }
     });
   };
 
-  const getTodoTitle = (e) =>
-    e.target.parentNode.parentNode.firstChild.textContent;
+  const getActiveTodoElement = (id) => document.getElementById(`${id}`);
+
+  const getTodoId = (e) => e.target.parentNode.parentNode.getAttribute("id");
 
   strikeTodoElement();
   removeTodoElement();
-  editTodoElement();
 
   return { showTodos };
 }
