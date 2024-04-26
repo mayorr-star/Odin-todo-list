@@ -165,6 +165,11 @@ header > h1{
 main.todos_wrapper{
     grid-column: 3 / 13;
     padding: 25px;
+    position: relative;
+}
+
+.new_todo_btn{
+    margin-top: 1rem;
 }
 
 .todos_div > h2.project-header{
@@ -179,11 +184,13 @@ main.todos_wrapper{
 
 .todo_form{
     background-color: #d5d5d5;
-    margin: 0 auto;
-    max-width: 400px;
+    width: 400px;
     min-width: 250px;
     border: 1px solid #2f2f22;
     border-radius: 3px;
+    position: absolute;
+    top: 10%;
+    right: 35%;
 }
 
 .fieldset{
@@ -226,6 +233,10 @@ textarea{
     justify-content: flex-end;
 }
 
+.todo_article .controls img{
+    cursor: pointer;
+}
+
 .todo_article{
     display: flex;
     flex-direction: column;
@@ -233,7 +244,7 @@ textarea{
     font-size: 1.3rem;
     padding: 7px;
     background-color: var(--form-btn-bg-color);
-    border-radius: 7px;
+    border-radius: 0 7px 7px 0;
 }
 
 .todo_article h3{
@@ -245,5 +256,16 @@ textarea{
 .checked{
     text-decoration: line-through;
     color: #d5d5d5;
+}
+
+.todo-container{
+    border-radius: 7px;
+    display: flex;
+}
+
+.todo-container > .border{
+    flex-basis: 20px;
+    /* background-color: red; */
+    border-radius: 7px 0 0 7px;
 }
 /* Todos*/
