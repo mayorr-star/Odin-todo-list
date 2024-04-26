@@ -11,7 +11,7 @@ export const projectsArray = [
         priority: "High",
         satus: "pending",
         project: "Car dashboard",
-        id: "Car dashboard"
+        id: "Get dashboard"
       },
       {
         title: "Electrician",
@@ -87,15 +87,15 @@ export function Todos() {
       dueDate,
       priority,
       project,
-      status = "pending",
+      status,
       id
     ) {
       this.title = title;
       this.description = description;
       this.dueDate = dueDate;
       this.priority = priority;
-      this.status = status;
       this.project = project;
+      this.status = status;
       this.id = id;
     }
 
@@ -108,16 +108,16 @@ export function Todos() {
     }
   }
 
-  const createTodo = (title, description, dueDate, priority, projectName, id) => {
-    const newTodo = new Todo(
+  const createTodo = (title, description, dueDate, priority, status, projectName, id) => {
+    return new Todo(
       title,
       description,
       dueDate,
       priority,
+      status,
       projectName,
       id
     );
-    return newTodo;
   };
 
   const changeTodoStatus = (todoIndex, value, projectName) => {
@@ -145,6 +145,7 @@ export function Todos() {
             todo.description = newDescription;
             todo.dueDate = newDueDate;
             todo.priority = newPriority;
+            todo.id = newTitle;
           }
         }
       }
