@@ -272,4 +272,9 @@ textarea{
 .active{
     background-color: #5adbb5;
 }
+
+.element_container{
+    display: flex;
+    gap: 5px;
+}
 /* Todos*/

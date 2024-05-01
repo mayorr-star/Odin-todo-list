@@ -7,7 +7,7 @@ export const projectsArray = [
       {
         title: "Get dashboard",
         description: "Go to town to  buy dashboard.",
-        dueDate: "12 / 02 / 24",
+        dueDate: "2024-02-12",
         priority: "High",
         status: "pending",
         project: "Car dashboard",
@@ -16,7 +16,7 @@ export const projectsArray = [
       {
         title: "Electrician",
         description: "Call the electrician to come inspect the car.",
-        dueDate: "14 / 02 / 24",
+        dueDate: "2024-02-14",
         priority: "High",
         status: "pending",
         project: "Car dashboard",
@@ -30,7 +30,7 @@ export const projectsArray = [
       {
         title: "Duolingo",
         description: "Download the duolingo app from google play store.",
-        dueDate: "5 / 01 / 24",
+        dueDate: "2024-01-05",
         priority: "High",
         status: "pending",
         project: "Spanish",
@@ -44,7 +44,7 @@ export const projectsArray = [
       {
         title: "Seal",
         description: "Remove seal and assemble it back again",
-        dueDate: "19 / 03 / 24",
+        dueDate: "2024-03-19",
         priority: "High",
         status: "pending",
         project: "Ingersoll Rand Compressor",
