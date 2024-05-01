@@ -268,4 +268,8 @@ textarea{
     /* background-color: red; */
     border-radius: 7px 0 0 7px;
 }
+
+.active{
+    background-color: #5adbb5;
+}
 /* Todos*/
