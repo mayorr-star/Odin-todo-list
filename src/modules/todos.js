@@ -9,7 +9,7 @@ export const projectsArray = [
         description: "Go to town to  buy dashboard.",
         dueDate: "12 / 02 / 24",
         priority: "High",
-        satus: "pending",
+        status: "pending",
         project: "Car dashboard",
         id: "Get dashboard"
       },
@@ -18,7 +18,7 @@ export const projectsArray = [
         description: "Call the electrician to come inspect the car.",
         dueDate: "14 / 02 / 24",
         priority: "High",
-        satus: "pending",
+        status: "pending",
         project: "Car dashboard",
         id: "Electrician"
       },
@@ -32,7 +32,7 @@ export const projectsArray = [
         description: "Download the duolingo app from google play store.",
         dueDate: "5 / 01 / 24",
         priority: "High",
-        satus: "pending",
+        status: "pending",
         project: "Spanish",
         id: "Duolingo"
       },
@@ -46,7 +46,7 @@ export const projectsArray = [
         description: "Remove seal and assemble it back again",
         dueDate: "19 / 03 / 24",
         priority: "High",
-        satus: "pending",
+        status: "pending",
         project: "Ingersoll Rand Compressor",
         id: "Seal"
       },
@@ -160,8 +160,14 @@ export function Todos() {
     }
   };
 
-  const filterTodos = (array, value) => {
-    return array.filter((project) => project.projectName === value);
+  const filterTodos = (value) => {
+    let result = null;
+    for (const project of projectsArray) {
+      if (project.projectName === value) {
+        result = project.todoList;
+      };
+    };
+    return result;
   };
 
   return {

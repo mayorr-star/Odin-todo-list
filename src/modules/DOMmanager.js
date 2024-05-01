@@ -162,10 +162,11 @@ addProjectButton.addEventListener("click", (e) => {
   addProjectButton.classList.add("hide");
 });
 
-function TodoElements() {
+(function TodoElements() {
   let activeProject = null;
   let editId = null;
   let edit = false;
+  let todoBtn = false;
   const switchActiveProject = (value) => {
     activeProject = value;
   };
@@ -297,14 +298,99 @@ function TodoElements() {
     });
   };
 
-  const showTodos = () => {
-    const projectButtons = ProjectElements().getProjectButtons();
-    projectButtons.forEach((button, index) => {
-      button.addEventListener("click", (e) => {
-        switchActiveProject(e.target.textContent);
+  const projectBtnsContanier = document.querySelector(
+    "[data-id = projects-btns-div]"
+  );
+  projectBtnsContanier.addEventListener("click", (e) => {
+    if (e.target.tagName === "BUTTON") {
+      const parent = e.target.parentNode.parentNode;
+      switchActiveProject(e.target.textContent);
+      if (!todoBtn) {
         appendNewTodoButton();
-      });
-    });
+        todoBtn = true;
+      }
+      const filterdArr = Todos().filterTodos(getActiveProject());
+      clearGrid();
+      showTodos(filterdArr);
+      changeHeader(e.target.textContent);
+    }
+  });
+
+  function clearGrid() {
+    const grid = getGridElement();
+    grid.innerHTML = "";
+  }
+
+  const checkArrayLength = (arr, value) => {
+    if (arr.length === 0) {
+      changeHeader(value);
+      return true;
+    }
+    return false;
+  }
+
+  const navBtnsContainer = document.querySelector(".home-nav-btns");
+  navBtnsContainer.addEventListener("click", e => {
+    if (e.target.tagName === "BUTTON") {
+      clearGrid();
+      switch (e.target.textContent) {
+        case "All Tasks":
+          let allTasks = [];
+          for (const project of projectsArray) {
+            for (const todo of project.todoList) {
+              allTasks.push(todo);
+            }
+          }
+          showTodos(allTasks);
+          break;
+        case "Today":
+          break;
+        case "This Week":
+          break;
+        case "Completed":
+          let completedTasks = [];
+          for (const project of projectsArray) {
+            for (const todo of project.todoList) {
+              if (todo.status === "completed") {
+                completedTasks.push(todo);
+              }
+            }
+          }
+          if(checkArrayLength(completedTasks, "There are no competed tasks")) {
+            return true;
+          }
+          showTodos(completedTasks);
+          changeHeader("Completed Tasks");
+          break;
+        default:
+          let importantTasks =[];
+          for (const project of projectsArray) {
+            for (const todo of project.todoList) {
+              if (todo.priority === "High") {
+                importantTasks.push(todo);
+              }
+            }
+          }
+          showTodos(importantTasks);
+          changeHeader("Important")
+      }
+    }
+  })
+
+  const changeHeader = (value) => {
+    const header = document.querySelector(".project-header");
+    header.textContent = value;
+  }
+
+  const showTodos = (arr) => {
+    for (const todo of arr) {
+      if (arr.length === 0) {
+        return;
+      } else {
+        const todoElement = createTodoElement(todo.title, todo.description, todo.dueDate,todo.priority);
+        appendTodoElement(todoElement);
+      }
+    }
   };
 
   const compareDates = (todaysDate, compareDate) => {
@@ -391,7 +477,7 @@ function TodoElements() {
             todoTitle
           );
           todo.storeTodo();
-          const todoElement = createTodoElement();
+          const todoElement = createTodoElement(todoTitle,todoDescription, dueDate, priority);
           appendTodoElement(todoElement);
         } else {
           const [title, description, date, importance] = getInputValues();
@@ -426,29 +512,22 @@ function TodoElements() {
     });
   };
 
-  const createTodoElement = () => {
+  const createTodoElement = (titleValue, descriptionValue, dateValue, priorityValue) => {
     const todoElement = document.createElement("article");
     const todoContainer = document.createElement("div");
-    const priorityElement = document.getElementById("todo_priority");
     todoContainer.classList.add("todo-container");
     const border = document.createElement("div");
     border.classList.add("border");
     todoElement.classList.add("todo_article");
     const title = document.createElement("h3");
-    title.textContent = document.getElementById("todo_title").value;
+    title.textContent = titleValue;
     todoElement.setAttribute("id", `${title.textContent}`);
     const description = document.createElement("p");
-    description.textContent = `Description: ${
-      document.getElementById("todo_description").value
-    }`;
+    description.textContent = `Description: ${descriptionValue}`;
     const date = document.createElement("span");
-    date.textContent = `Due date: ${
-      document.getElementById("todo_duedate").value
-    }`;
+    date.textContent = `Due date: ${dateValue}`
     const priority = document.createElement("span");
-    priority.textContent = `Priority: ${
-      document.getElementById("todo_priority").value
-    }`;
+    priority.textContent = `Priority: ${priorityValue}`
 
     const controls = document.createElement("div");
     controls.classList.add("controls");
@@ -474,7 +553,7 @@ function TodoElements() {
     todoElement.appendChild(controls);
     todoContainer.appendChild(todoElement);
 
-    switch (priorityElement.value) {
+    switch (priorityValue) {
       case "High":
         showPriority(border, "red");
         break;
@@ -531,7 +610,7 @@ function TodoElements() {
           const activeProject = getActiveProject();
           Todos().changeTodoStatus(
             findTodoPosition(todoId),
-            "complete",
+            "completed",
             activeProject
           );
         } else {
@@ -580,13 +659,8 @@ function TodoElements() {
     });
   };
 
-  const getActiveTodoElement = (id) => document.getElementById(`${id}`);
-
   const getTodoId = (e) => e.target.parentNode.parentNode.getAttribute("id");
 
   strikeTodoElement();
   removeTodoElement();
-
-  return { showTodos };
-}
-TodoElements().showTodos();
+})()
