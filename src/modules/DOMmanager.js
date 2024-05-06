@@ -339,6 +339,11 @@ addProjectButton.addEventListener("click", (e) => {
   const navBtnsContainer = document.querySelector(".home-nav-btns");
   navBtnsContainer.addEventListener("click", (e) => {
     if (e.target.tagName === "BUTTON") {
+      todoBtn = false;
+      if (document.getElementById("new_todo_btn") !== null) {
+        const button = document.getElementById("new_todo_btn")
+        clearContent(button);
+      };
       clearGrid();
       switch (e.target.textContent) {
         case "All Tasks":
@@ -432,6 +437,16 @@ addProjectButton.addEventListener("click", (e) => {
       }
     }
   };
+
+  function loadTasks() {
+    const arr = [];
+    for (const project of projectsArray) {
+      for (const todo of project.todoList) {
+        arr.push(todo);
+      }
+    }
+    showTodos(arr);
+  }
 
   const validateInputs = () => {
     const todoTitleInput = document.getElementById("todo_title");
@@ -729,4 +744,5 @@ addProjectButton.addEventListener("click", (e) => {
 
   strikeTodoElement();
   removeTodoElement();
+  loadTasks();
 })();
