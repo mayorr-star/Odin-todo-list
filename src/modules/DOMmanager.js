@@ -643,6 +643,10 @@ addProjectButton.addEventListener("click", (e) => {
     todoContainer.appendChild(todoElement);
 
     showPriority(border, priorityValue)
+
+    if (checkStatus(projectName).includes(titleValue)) {
+      todoContainer.classList.add("checked");
+    }
     return todoContainer;
   };
 
@@ -693,26 +697,38 @@ addProjectButton.addEventListener("click", (e) => {
     const gridContainer = getGridElement();
     gridContainer.addEventListener("click", (e) => {
       if (e.target.type === "checkbox") {
-        const article = e.target.parentNode.parentNode;
-        article.classList.toggle("checked");
+        const todoArticle = e.target.parentNode.parentNode.parentNode;
+        todoArticle.classList.toggle("checked");
         const todoId = getTodoId(e);
+        const projectName = todoArticle.getAttribute("project-id");
         if (e.target.checked) {
-          const activeProject = getActiveProject();
           Todos().changeTodoStatus(
             findTodoPosition(todoId),
             "completed",
-            activeProject
+            projectName
           );
         } else {
           Todos().changeTodoStatus(
             findTodoPosition(todoId),
             "pending",
-            activeProject
+            projectName
           );
         }
       }
     });
   };
+
+  const checkStatus = (projectName) => {
+    const filterData = [];
+    for (const project of projectsArray) {
+      for (const todo of project.todoList) {
+        if (todo.status === "completed" && todo.project === projectName) {
+          filterData.push(todo.id)
+        }
+      }
+    }
+    return filterData;
+  }
 
   const getGridElement = () => document.getElementById("grid");
 
