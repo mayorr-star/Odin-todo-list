@@ -134,6 +134,7 @@ export function Todos() {
   };
 
   const editTodo = (todoIndex, newTitle, newDescription, newDueDate, newPriority, projectName) => {
+    console.log(todoIndex);
     for (const project of projectsArray) {
       if (project.projectName === projectName) {
         for (let i = 0; i < project.todoList.length; i++) {
