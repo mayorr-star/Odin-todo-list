@@ -1,5 +1,3 @@
-// import { ContextExclusionPlugin } from "webpack";
-
 export const projectsArray = [
   {
     projectName: "Car dashboard",
