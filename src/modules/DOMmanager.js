@@ -2,12 +2,16 @@ import { projectsArray, Projects, Todos } from "./Todos";
 import deleteIcon from "../images/delete.svg";
 import editIcon from "../images/edit.svg";
 import { setError, setSuccess } from "./validateForm";
-import { startOfDay, isBefore, isToday, startOfWeek, endOfWeek, isWithinInterval } from "date-fns";
+import { startOfDay, isBefore, isToday, startOfWeek, endOfWeek, isWithinInterval, startOfYesterday } from "date-fns";
+import { saveToLocalStorage, getFromLocalStorage } from "./localStorage";
 
 function clearContent(content) {
   const parent = content.parentNode;
   parent.removeChild(content);
 }
+
+saveToLocalStorage("projects", projectsArray);
+// localStorage.clear()
 
 function ProjectElements() {
   const createProjectButton = (projectName) => {
@@ -121,6 +125,7 @@ function ProjectElements() {
         const buttonPosition = parseInt(e.target.parentNode.dataset.index);
         clearContent(buttonToRemove);
         Projects().deleteProject(buttonPosition);
+        saveToLocalStorage("projects", projectsArray);
       }
     });
   };
@@ -133,6 +138,7 @@ function ProjectElements() {
       const projectTitle = document.getElementById("project_title").value;
       const newProject = Projects().createProject(projectTitle);
       newProject.storeProject();
+      saveToLocalStorage("projects", projectsArray);
       const newProjectButton = createProjectButton(projectTitle);
       appendProjectButton(newProjectButton);
       clearContent(projectForm);
@@ -165,6 +171,7 @@ addProjectButton.addEventListener("click", (e) => {
 
 (function TodoElements() {
   let activeProject = null;
+  let todoParentId = null;
   let editId = null;
   let edit = false;
   let todoBtn = false;
@@ -272,7 +279,6 @@ addProjectButton.addEventListener("click", (e) => {
   };
 
   const appendTodoForm = (form) => {
-    console.log(edit)
     const mainTodosWrapper = document.getElementById("todos_wrapper");
     mainTodosWrapper.appendChild(form);
     closeTodoForm(form);
@@ -441,8 +447,9 @@ addProjectButton.addEventListener("click", (e) => {
   };
 
   function displayInitialTasks() {
+    const storedData = getFromLocalStorage("projects");
     const arr = [];
-    for (const project of projectsArray) {
+    for (const project of storedData) {
       for (const todo of project.todoList) {
         arr.push(todo);
       }
@@ -543,12 +550,12 @@ addProjectButton.addEventListener("click", (e) => {
           saveValues(todoTitle, todoDescription, dueDate, priority)
           const [title, description, date, importance] = getInputValues();
           Todos().editTodo(
-            findTodoPosition(editId),
+            findTodoPosition(editId, getTodoContainerProjectId()),
             title,
             description,
             date,
             importance,
-            getActiveProject()
+            getTodoContainerProjectId()
           );
           editTodoElement(title, description, date, importance);
           clearContent(todoForm);
@@ -560,7 +567,8 @@ addProjectButton.addEventListener("click", (e) => {
         if (edit) {
           edit = false;
         }
-    });
+        saveToLocalStorage("projects", projectsArray);
+      });
   };
 
   const closeTodoForm = (element) => {
@@ -668,13 +676,9 @@ addProjectButton.addEventListener("click", (e) => {
     }
   };
 
-  const findTodoPosition = (id) => {
-    for (const project of projectsArray) {
-      const index = project.todoList.findIndex((todo) => {
-        return todo.id === id;
-      });
-      return index;
-    }
+  const findTodoPosition = (id, projectTitle) => {
+    return projectsArray.filter(project => project.projectName === projectTitle).flatMap(todo => todo.todoList).
+    findIndex(todo => todo.id === id);
   };
 
   const removeTodoElement = () => {
@@ -687,8 +691,9 @@ addProjectButton.addEventListener("click", (e) => {
         const todoToRemove = e.target.parentNode.parentNode.parentNode;
         const projectName = todoToRemove.getAttribute("project-id");
         const todoId = getTodoId(e);
-        Todos().deleteTodo(projectName, findTodoPosition(todoId));
+        Todos().deleteTodo(projectName, findTodoPosition(todoId, projectName));
         clearContent(todoToRemove);
+        saveToLocalStorage("projects", projectsArray);
       }
     });
   };
@@ -703,16 +708,17 @@ addProjectButton.addEventListener("click", (e) => {
         const projectName = todoArticle.getAttribute("project-id");
         if (e.target.checked) {
           Todos().changeTodoStatus(
-            findTodoPosition(todoId),
+            findTodoPosition(todoId, projectName),
             "completed",
             projectName
           );
         } else {
           Todos().changeTodoStatus(
-            findTodoPosition(todoId),
+            findTodoPosition(todoId, projectName),
             "pending",
             projectName
           );
+          saveToLocalStorage("projects", projectsArray);
         }
       }
     });
@@ -732,10 +738,16 @@ addProjectButton.addEventListener("click", (e) => {
 
   const getGridElement = () => document.getElementById("grid");
 
+  const setTodoContainer = (e) => {
+    todoParentId = e.target.parentNode.parentNode.parentNode.getAttribute("project-id");
+  }
+  const getTodoContainerProjectId = (e) => todoParentId;
+
   const gridContainer = getGridElement();
   gridContainer.addEventListener("click", (e) => {
     if (e.target.tagName === "IMG" && e.target.dataset.id === "edit_todo_btn") {
       const parent = e.target.parentNode.parentNode;
+      setTodoContainer(e);
       const title = parent.children[0].textContent;
       const text = parent.children[1].children[1].textContent;
       const date = parent.children[2].children[1].textContent;
