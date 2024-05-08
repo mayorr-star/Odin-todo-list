@@ -158,7 +158,7 @@ function ProjectElements() {
   };
 }
 
-ProjectElements().displayProjects(projectsArray);
+ProjectElements().displayProjects(getFromLocalStorage("projects"));
 ProjectElements().removeProjectButton();
 
 const addProjectButton = document.getElementById("add_project");
